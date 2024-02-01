@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Usuários de Teste via REST</title>
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+</head>
+
+<body class="container bg-warning" id="usuarios">
+
+  <h1>Usuários de Teste via REST</h1>
+
+  <p style="color:white">Os usuários deste exemplo são fornecidor pela API de testes reqres.in</p>
+
+  <div id="usuarios" class="container-fluid">
+
+    <div class="row">
+
+      <div v-for="(user, index) in users" :key="index" class="card col-4 p-2 m-3">
+
+        <img :src="user.avatar" class="card-img-top" alt="Imagem de {{user.first_name}} {{user.last_name}}">
+        
+        <div class="card-body">
+
+          <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
+
+          <p class="card-text">{{user.email}}</p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+
+    Vue.createApp({
+      data(){
+        return {
+            users: []
+        }
+      },
+      mounted() {
+        this.loadUsers();
+      },
+      methods: {
+        loadUsers() {
+
+          var self = this
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', 'https://reqres.in/api/users?per_page=10', true);
+          
+          xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              var responseData = JSON.parse(xhr.responseText);
+              self.users = responseData.data;
+            } else {
+              console.error('Erro ao carregar usuários:', xhr.statusText);
+            }
+          };
+
+          xhr.onerror = function () {
+            console.error('Erro ao carregar usuários.');
+          };
+
+          xhr.send();
+        }
+      },
+    }).mount("#usuarios");
+  </script>
+
+</body>
+
+</html>
